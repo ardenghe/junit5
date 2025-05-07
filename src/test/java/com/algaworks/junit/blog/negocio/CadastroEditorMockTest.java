@@ -9,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -30,7 +29,7 @@ public class CadastroEditorMockTest {
     @Nested
     class CadastroComEditorValido {
         @Spy // Com o @spy ele sempre é instanciado em cada teste.
-        Editor editor = new Editor(null, "Alex", "alex@alex.com", BigDecimal.TEN, true);
+        Editor editor = EditorTestData.umEditorNovo();
 
 
         @BeforeEach
@@ -95,7 +94,7 @@ public class CadastroEditorMockTest {
                     .thenReturn(Optional.empty())
                     .thenReturn(Optional.of(editor));
 
-            Editor editorComEmailExistente = new Editor(null, "Alex", "alex@alex.com", BigDecimal.TEN, true);
+            Editor editorComEmailExistente = EditorTestData.umEditorNovo();
             cadastroEditor.criar(editor);
             Assertions.assertThrows(RegraNegocioException.class, () -> cadastroEditor.criar(editorComEmailExistente));
         }
@@ -114,22 +113,18 @@ public class CadastroEditorMockTest {
 
     @Nested
     class CadastroComEditorNull {
-        @Spy // Com o @spy ele sempre é instanciado em cada teste.
-        Editor editor = new Editor(1L, "Alex", "alex@alex.com", BigDecimal.TEN, true);
-
         @Test
-        void Dado_um_editor_null_Quando_cadastrar_Entao_deve_lanacar_exception() {
+        void Dado_um_editor_null_Quando_cadastrar_Entao_deve_lancar_exception() {
             Assertions.assertThrows(NullPointerException.class, () -> cadastroEditor.criar(null));
-            Mockito.verify(armazenamentoEditor, Mockito.never()).salvar(editor);
-            Mockito.verify(gerenciadorEnvioEmail, Mockito.never())
-                    .enviarEmail(Mockito.any(Mensagem.class));
+            Mockito.verify(armazenamentoEditor, Mockito.never()).salvar(Mockito.any());
+            Mockito.verify(gerenciadorEnvioEmail, Mockito.never()).enviarEmail(Mockito.any());
         }
     }
 
     @Nested
     class EdicaoComEditorValido {
         @Spy // Com o @spy ele sempre é instanciado em cada teste.
-        Editor editor = new Editor(1L, "Alex", "alex@alex.com", BigDecimal.TEN, true);
+        Editor editor = EditorTestData.umEditorExistente();
 
         @BeforeEach
         void init() {
@@ -140,7 +135,7 @@ public class CadastroEditorMockTest {
 
         @Test
         void Dado_um_editor_valido_Quando_editar_Entao_deve_alterar_editor_salvo() {
-            Editor editorAtualizado = new Editor(1L, "Alex", "alex@alex.com", BigDecimal.TEN, false);
+            Editor editorAtualizado = EditorTestData.umEditorExistente();
             cadastroEditor.editar(editorAtualizado);
 
             Mockito.verify(editor, Mockito.times(1)).atualizarComDados(editorAtualizado);
@@ -155,7 +150,7 @@ public class CadastroEditorMockTest {
 
     @Nested
     class EdicaoComEditorInexistente {
-        Editor editor = new Editor(99L, "Alex", "alex@alex.com", BigDecimal.TEN, false);
+        Editor editor = EditorTestData.umEditorComIdInexistente();
 
         @BeforeEach
         void init() {
