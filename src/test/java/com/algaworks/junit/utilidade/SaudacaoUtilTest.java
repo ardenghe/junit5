@@ -1,5 +1,6 @@
 package com.algaworks.junit.utilidade;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
@@ -17,7 +18,11 @@ class SaudacaoUtilTest {
     public void saudarComBomDia() {
         int horaValida = 9;
         String saudacao = saudar(horaValida);
-        assertEquals("Bom dia", saudacao);
+       // assertEquals("Bom dia", saudacao);
+
+        Assertions.assertThat(saudacao)
+                .withFailMessage("Saudação incorreta")
+                .isEqualTo("Bom dia");
     }
 
     @Test
