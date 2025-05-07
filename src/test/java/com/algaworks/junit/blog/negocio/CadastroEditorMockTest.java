@@ -29,7 +29,7 @@ public class CadastroEditorMockTest {
     @Nested
     class CadastroComEditorValido {
         @Spy // Com o @spy ele sempre é instanciado em cada teste.
-        Editor editor = EditorTestData.umEditorNovo();
+        Editor editor = EditorTestData.umEditorNovo().build();
 
 
         @BeforeEach
@@ -94,7 +94,7 @@ public class CadastroEditorMockTest {
                     .thenReturn(Optional.empty())
                     .thenReturn(Optional.of(editor));
 
-            Editor editorComEmailExistente = EditorTestData.umEditorNovo();
+            Editor editorComEmailExistente = EditorTestData.umEditorNovo().build();
             cadastroEditor.criar(editor);
             Assertions.assertThrows(RegraNegocioException.class, () -> cadastroEditor.criar(editorComEmailExistente));
         }
@@ -124,7 +124,7 @@ public class CadastroEditorMockTest {
     @Nested
     class EdicaoComEditorValido {
         @Spy // Com o @spy ele sempre é instanciado em cada teste.
-        Editor editor = EditorTestData.umEditorExistente();
+        Editor editor = EditorTestData.umEditorExistente().build();
 
         @BeforeEach
         void init() {
@@ -135,7 +135,12 @@ public class CadastroEditorMockTest {
 
         @Test
         void Dado_um_editor_valido_Quando_editar_Entao_deve_alterar_editor_salvo() {
-            Editor editorAtualizado = EditorTestData.umEditorExistente();
+            Editor editorAtualizado = EditorTestData.umEditorExistente()
+                    .comEmail("alex.silva@email.com")
+                    .comNome("Alex Silva")
+                    .build();
+
+
             cadastroEditor.editar(editorAtualizado);
 
             Mockito.verify(editor, Mockito.times(1)).atualizarComDados(editorAtualizado);
@@ -150,7 +155,7 @@ public class CadastroEditorMockTest {
 
     @Nested
     class EdicaoComEditorInexistente {
-        Editor editor = EditorTestData.umEditorComIdInexistente();
+        Editor editor = EditorTestData.umEditorComIdInexistente().build();
 
         @BeforeEach
         void init() {
