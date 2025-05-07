@@ -39,13 +39,13 @@ class CadastroPostTest {
     ArgumentCaptor<Notificacao> notificacaoArgumentCaptor;
 
     @Spy
-    Editor editor = new Editor(1L, "Alex", "alex@email.com", BigDecimal.TEN, true);
+    Editor editor = EditorTestData.umEditorExistente().build();
 
     @Nested
     public final class Cadastro {
 
         @Spy
-        Post post = new Post("Olá mundo Java", "Olá Java com System.out.println", editor, true, true);
+        Post post = PostTestData.umPostExistente().build();
 
         @Test
         public void Dado_um_post_valido__Quanto_cadastrar__Entao_deve_salvar() {
@@ -187,7 +187,7 @@ class CadastroPostTest {
     public final class Edicao {
 
         @Spy
-        Post post = new Post(1L, "Olá mundo Java", "Olá Java com System.out.println", editor, "ola-mundo-java", new Ganhos(BigDecimal.TEN, 4, BigDecimal.valueOf(10)), true, true);
+        Post post = PostTestData.umPostNovo().build();
 
         @Test
         public void Dado_um_post_valido__Quando_editar__Entao_deve_salvar() {
@@ -266,7 +266,7 @@ class CadastroPostTest {
 
         @Test
         public void Dado_um_post_valido__Quando_editar__Entao_deve_deve_alterar_post_salvo() {
-            Post postAlterado = new Post(1L, "Olá Java", "Olá Java", editor, "ola-mundo-java", new Ganhos(BigDecimal.TEN, 4, BigDecimal.valueOf(10)), true, true);
+            Post postAlterado = PostTestData.umPostExistente().build();
 
             Mockito.when(armazenamentoPost.salvar(Mockito.any(Post.class)))
                     .then(invocacao -> invocacao.getArgument(0, Post.class));
